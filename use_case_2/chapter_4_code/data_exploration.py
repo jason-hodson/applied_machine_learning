@@ -152,3 +152,39 @@ print("orders within 1 week: ", df_joined[df_joined['day_difference'] <= 7].shap
 
 #create histogram of the day differences
 df_joined['day_difference'].hist(bins = bin_vals)
+
+
+####Descriptive Statistics####
+
+
+#create list of numeric columns
+numeric_cols = [
+'Bill subtotal', 'Packaging charges', 
+'Restaurant discount (Promo)', 
+       'Restaurant discount (Flat offs, Freebies & others)', 
+'Gold discount', 'Brand pack discount', 'Total', 'Rating', 
+'Restaurant compensation (Cancellation)', 'Restaurant penalty (Rejection)', 
+'KPT duration (minutes)', 'Rider wait time (minutes)'
+]
+
+#create blank data frame
+df_for_metrics = pd.DataFrame()
+
+#set up for loop to go through each of the numeric columns
+for col in numeric_cols:
+    mean_val = np.mean(df[col])
+    median_val = np.nanmedian(df[col])
+    nan_vals = df[col].isna().sum()
+    not_nan_vals = df[col].count()
+    
+    #put the outputs into a dictionary
+    data = {"column_name": col, "mean": mean_val, "median": median_val, "blanks": nan_vals, "not_blank": not_nan_vals}
+    
+    #create a temporary data frame 
+    data = pd.DataFrame(data, index=[0])
+
+    #stack the temporary data frame onto the df_for_metrics data
+    df_for_metrics = pd.concat([df_for_metrics, data], axis = 0, ignore_index = True)
+
+
+
