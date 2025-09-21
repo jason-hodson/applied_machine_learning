@@ -187,4 +187,42 @@ for col in numeric_cols:
     df_for_metrics = pd.concat([df_for_metrics, data], axis = 0, ignore_index = True)
 
 
+####Correlation Analysis####
+
+#create list of numeric columns
+numeric_cols = ['Bill subtotal', 'Packaging charges', 'Restaurant discount (Promo)', 
+                'Restaurant discount (Flat offs, Freebies & others)', 'Gold discount', 
+                'Brand pack discount', 'Total', 'Rating', 'Restaurant compensation (Cancellation)', 
+                'Restaurant penalty (Rejection)', 'KPT duration (minutes)', 'Rider wait time (minutes)']
+
+#create new df with only the numeric columns
+df_for_correlations = df[numeric_cols]
+
+#preview the data
+df_for_correlations.head()
+
+#create correlation matrix
+correlation_matrix = df_for_correlations.corr()
+
+#display correlation matrix
+print(correlation_matrix)
+
+#import seaborn which is a robust data visualization package in Python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+#set the plot size
+plt.figure(figsize=(8, 6))
+
+#create heatmap for the correlation matrix
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+
+#title the correlation matrix heatmap
+plt.title('Correlation Matrix Heatmap')
+
+#displa the heatmap
+plt.show()
+
+
+
 
