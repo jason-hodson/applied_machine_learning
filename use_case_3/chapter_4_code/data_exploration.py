@@ -79,5 +79,19 @@ for col in col_list:
     plt.xticks(rotation=45, ha='right')
     plt.show()
 
+####Descriptive Statistics####
+
+
+#print the median of victim age
+print(df['Vict Age'].median())
+
+#print the mean of the victim age
+print(df['Vict Age'].mean())
+
+#print the median victim age for ages greater than 0
+print(df[df['Vict Age'] > 0]['Vict Age'].median())
+
+#print the mean victim age for ages greater than 0
+print(df[df['Vict Age'] > 0]['Vict Age'].mean())
 
 
