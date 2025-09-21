@@ -62,3 +62,68 @@ df_summarized = df_summarized.reset_index()
 #plot the data by date and price
 df_summarized.plot.line(x=’invoicedate’, y=’Price’)
 
+####Descriptive Statistics
+import numpy as np
+
+#print mean before summarizing and filtering data
+print("Before Summarizing, Without filtering: ", np.mean(df['Price']))
+
+#print mean before summarizing the data, but after filtering
+print("Before Summarizing, With filtering: ", np.mean(df_cleaned['Price']))
+
+#create a space for the output
+print("")
+
+#create grouped dataset by date summing price
+df_summarized_no_filters = pd.DataFrame(df.groupby('invoicedate')['Price'].sum()).reset_index()
+
+#create grouped dataset after filtering
+df_summarized_with_filters = pd.DataFrame(df_cleaned.groupby('invoicedate')['Price'].sum()).reset_index()
+
+#print mean after summarizing, but not filtering
+print("After Summarizing, Without filtering: ", np.mean(df_summarized_no_filters['Price']))
+
+#print mean after summarizing and filtering
+print("After Summarizing, With filtering: ", np.mean(df_summarized_with_filters['Price']))
+
+#print median without grouping or filtering
+print("Before Summarizing, Without filtering: ", np.nanmedian(df['Price']))
+
+#print median with filtering, but not grouping
+print("Before Summarizing, With filtering: ", np.nanmedian(df_cleaned['Price']))
+
+#create space for the output
+print("")
+
+#group data by date while summing price without filters
+df_summarized_no_filters = pd.DataFrame(df.groupby('invoicedate')['Price'].sum()).reset_index()
+
+#group data by date while summing price with filters
+df_summarized_with_filters = pd.DataFrame(df_cleaned.groupby('invoicedate')['Price'].sum()).reset_index()
+
+#print median with summarizing, but not filtering
+print("After Summarizing, Without filtering: ", np.nanmedian(df_summarized_no_filters['Price']))
+
+#print median with summarizing and filtering
+print("After Summarizing, With filtering: ", np.nanmedian(df_summarized_with_filters['Price']))
+
+#print the mean
+print("Mean: ", np.mean(df_summarized_with_filters['Price']))
+
+#print the median
+print("Median: ", np.nanmedian(df_summarized_with_filters['Price']))
+
+#print the 25th percentile
+print("25th Percentile: ", np.percentile(df_summarized_with_filters['Price'], 25))
+
+#print the 75th percentile
+print("75th Percentile: ", np.percentile(df_summarized_with_filters['Price'], 75))
+
+#print the 10th percentile
+print("10th Percentile: ", np.percentile(df_summarized_with_filters['Price'], 10))
+
+#print the 90th percentile
+print("90th Percentile: ", np.percentile(df_summarized_with_filters['Price'], 90))
+
+
+
