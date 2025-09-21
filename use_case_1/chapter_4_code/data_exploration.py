@@ -126,4 +126,21 @@ print("10th Percentile: ", np.percentile(df_summarized_with_filters['Price'], 10
 print("90th Percentile: ", np.percentile(df_summarized_with_filters['Price'], 90))
 
 
+####Correlation Analysis####
+
+
+#create correlation matrix for price and quantity
+np.corrcoef(df_cleaned[‘Price’], df_cleaned[‘Quantity’])
+
+#group the data by date, summing both price and quantity
+df_summarized = df_cleaned.groupby(['invoicedate']).agg({'Quantity': 'sum', 'Price': 'sum'})
+
+#print a preview of the data
+print(df_summarized.head())
+
+#print extra line for the output
+print("")
+
+#print new correlation matrix for the grouped date
+print(np.corrcoef(df_summarized['Price'], df_summarized['Quantity']))
 
