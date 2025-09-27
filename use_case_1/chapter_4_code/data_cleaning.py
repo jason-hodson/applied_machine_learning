@@ -164,3 +164,81 @@ print(df_customers.shape)
 #preview the data
 df_customers.head()
 
+
+####Dimensionality Reduction
+
+#create list of values for components to try
+versions_of_n = [5, 10, 15, 20, 25]
+
+#loop to try each iteration of components
+for n in versions_of_n:
+    #create pca object
+    pca = PCA(n_components=n)
+
+    #fit pca to df_country
+    pca.fit(df_country)
+
+    #print explained ratios of the components
+    print("Explained variance ratio:", pca.explained_variance_ratio_)
+
+
+#pick the 11 components
+pca_country = PCA(n_components=11)
+
+#fit the pca model to df_country
+pca_country.fit(df_country)
+
+#print the explained variance ratio
+print("Explained variance ratio:", sum(pca_country.explained_variance_ratio_))
+
+#using 50 components for the description field
+pca_description = PCA(n_components=50)
+
+#fit the pca model to df_description
+pca_description.fit(df_description)
+
+#print the explained variance ratio
+print("Explained variance ratio:", pca_description.explained_variance_ratio_)
+
+#use 50 for the components on customer
+pca_customer = PCA(n_components=50)
+
+#fit the pca model to df_customers
+pca_customer.fit(df_customers)
+
+#print the explained variance ratio
+print("Explained variance ratio:", pca_customer.explained_variance_ratio_)
+
+#pick number of components
+versions_of_n = [5, 10, 15]
+
+#for loop to try various iterations of components
+for n in versions_of_n:
+
+    #create inputs for LDA
+    x = df_country
+
+    #create target variable for LDA
+    y = df_cleaned['Price'].astype(int)
+    
+    #split into training and test data
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.25)
+    
+    #create lda model with number of components from the loop
+    lda = LinearDiscriminantAnalysis(n_components=n)
+
+    #fit the LDA model
+    lda.fit(X_train, y_train)
+    
+    #predict on the test dataset with the lda model
+    y_pred = lda.predict(X_test)
+    
+    #create the accuracy score
+    accuracy = accuracy_score(y_test, y_pred)
+
+    #print the accuracy score
+    print(accuracy)
+
+
+
+
