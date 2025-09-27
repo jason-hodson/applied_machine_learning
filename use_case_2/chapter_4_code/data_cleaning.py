@@ -32,3 +32,52 @@ for col in df.columns:
 
 #drop the instructions and review columns
 df = df.drop(columns=['Instructions','Review'])
+
+
+
+####Dummy Coding
+
+#print unique values for each column
+for col in df.columns:
+    print(col, ": ", len(df[col].unique()))
+
+#look at unique values in distance
+df['Distance'].unique()
+
+#define function to convert the distance from a string to numeric column
+def convert_distance(col):
+    if col == '<1km':
+        return 0.5
+    else:
+        return col[:-2]
+
+#apply the function created to convert distance column from string to numeric
+df['DistanceNumeric'] = df['Distance'].apply(convert_distance)
+
+#check the results
+df.groupby(['Distance', 'DistanceNumeric'])['timestamp'].count()
+
+#drop the original distance column
+df = df.drop(columns=['Distance'])
+
+#look at unique values in customer complaint tag column
+df['Customer complaint tag'].unique()
+
+#check unique values in cancellation/rejection reason
+df['Cancellation / Rejection reason'].unique()
+
+#check unique values in order ready marked column
+df['Order Ready Marked'].unique()
+
+#create list of columns to drop
+cols_to_drop = ['Restaurant ID', 'City', 'Order ID', 'Delivery', 'Order Placed At','Items in order', 'Discount construct', 'Order Status']
+
+#drop columns
+df = df.drop(columns = cols_to_drop)
+
+#create list of columns to dummy code
+cols_to_dummy = ['Restaurant name', 'Subzone', 'Cancellation / Rejection reason', 'Order Ready Marked', 'Customer complaint tag']
+
+#dummy code columns
+df_dummied = pd.get_dummies(df, columns=cols_to_dummy)
+
