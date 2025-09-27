@@ -113,3 +113,97 @@ columns = ['AREA', 'Rpt Dist No', 'Part 1-2', 'Crm Cd', 'Crm Cd Desc', 'Mocodes'
 
 #save data to csv file
 df_dummied.to_csv('crime_data_prepped.csv', index=False)
+
+
+####Dimensionality Reduction
+
+#use regex to select columns in the dataset
+df_to_reduce = df.filter(
+regex='Vict Age|
+crime_description|
+victim_gender|
+victim_race|
+crime_premises|
+crime_weapon'
+)
+
+#print columns in the new dataset
+print(df_to_reduce.columns)
+
+from sklearn.decomposition import PCA
+
+#create list of component options to try
+versions_of_n = [5, 10, 15, 20, 25]
+
+#loop through each component and print out the results
+for n in versions_of_n:
+    pca = PCA(n_components=n)
+    pca.fit(df_to_reduce)
+    print("Number of Components: ", n)
+    print("Overall Explained Variance: ",sum(pca.explained_variance_ratio_))
+    print("Explained Variance Ratio: ", pca.explained_variance_ratio_)
+    print("")
+
+#create areas data frame from unique list of area names
+areas = pd.DataFrame(
+df['AREA NAME'].unique(), 
+columns=['Area Name']
+)
+
+#create key as join column
+areas['key'] = 0
+
+#create data frame of dates ranging from the first and last day of the dataset
+dates = pd.DataFrame(pd.date_range(start=df['DATE'].min(), end=df['DATE'].max()), columns=['Date'])
+
+#create key as join column
+dates['key'] = 0
+
+#join the areas and dates data frames using outer join
+df_full = dates.merge(areas, how='outer', on='key')
+
+#drop the key column
+df_full = df_full.drop(columns=['key'])
+
+#summarize using mean for all numeric variables, grouping by date and area name
+df_summarized = df.groupby(['DATE', 'AREA NAME']).mean(numeric_only=True).reset_index()
+
+#summarize the count of crime for the date and area name
+df_count = df.groupby(['DATE', 'AREA NAME'])['DR_NO'].count().reset_index()
+
+#rename the DR NO to crime count for clarity
+df_count.columns = ['DATE', 'AREA NAME', 'crime_count']
+
+#join together the summarized data with avergages with the count of crime data
+df_summarized = df_summarized.merge(df_count, how = 'left', on = ['DATE', 'AREA NAME'])
+
+#convert date to pandas date time to ensure join works
+df_summarized['DATE'] = pd.to_datetime(df_summarized['DATE'])
+
+#join all dates onto the summarized dataset to ensure all combinations occur
+df_summarized = df_full.merge(df_summarized, how = 'left', left_on = ['Date', 'Area Name'], right_on = ['DATE', 'AREA NAME'])
+
+#fill all blanks with 0
+df_summarized = df_summarized.fillna(0)
+
+#drop extra columns from join
+df_summarized = df_summarized.drop(columns=['Date', 'Area Name', 'DR_NO'])
+
+#remove columns we don’t want in PCA
+df_to_reduce = df_summarized.drop(columns=['AREA NAME', 'DATE', 'crime_count'])
+
+#versions of the components to test
+versions_of_n = [5, 10, 15, 20, 25]
+
+#loop through each of the component options
+for n in versions_of_n:
+    pca = PCA(n_components=n)
+    pca.fit(df_to_reduce)
+    print("Number of Components: ", n)
+    print("Overall Explained Variance: ",sum(pca.explained_variance_ratio_))
+    print("Explained Variance Ratio: ", pca.explained_variance_ratio_)
+    print("")
+
+#write to data to csv file
+df_summarized.to_csv("df_summarized", index=False)
+
