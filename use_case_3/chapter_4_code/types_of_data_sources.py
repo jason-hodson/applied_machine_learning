@@ -1,11 +1,18 @@
-#read in first excel file
-df_1 = pd.read_excel("Crime_Data_from_2020_to_Present_1.xlsx")
+import pandas as pd
+import os 
 
-#read in second excel file
-df_2 = pd.read_excel("Crime_Data_from_2020_to_Present_2.xlsx")
+#execute for loop on the set of code
+for file_name in os.listdir():
 
-#stack the two datasets on top of each other
-df = pd.concat([df_1, df_2], axis=0)
+	#specifically only reference the .xlsx files in the directory
+	if file_name.endswith(“.xlsx”):
+
+		#read in the file as a generic object name
+		df_temp = pd.read_excel(file_name)
+
+		#stack each file on top of each other into what was a blank df
+		df = pd.concat([df, df_temp], axis = 0)
+
 
 #save the dataset to .csv
 df.to_csv('crime_data.csv', index=False)
